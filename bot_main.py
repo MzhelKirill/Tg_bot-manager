@@ -31,18 +31,18 @@ async def add_base(message: types.Message):
 async def show_decision(message: types.Message):
     decisions = cursor.execute(f"SELECT * FROM {message.text[31:]}  WHERE date = ? and username = ?", (message.text[21:29], message.text[31:])).fetchall()
     db.commit()
-    dates = cursor.execute(f"SELECT * FROM {message.text[31:]}").fetchall()
 
     count = 0
     answer = ''
 
-    # decisions = decisions.split(", ")
     for item in decisions:
         answer += f'{count + 1})  пользователь: @{item[0]}\n    решение: {item[1]}\n    дата: {item[2]}\n\n'
         count += 1
 
-    await message.answer(answer)
-
+    if decisions:
+        await message.answer(answer)
+    else:
+        await message.answer("решений нет")
 
 async def main():
     await dp.start_polling(bot)
